@@ -2,7 +2,7 @@ return {
   {
     "mfussenegger/nvim-lint",
     opts = {
-      linters_by_ft = { python = { "mypy", "flake8" } },
+      linters_by_ft = { python = { "mypy", "flake8", "cspell" } },
     },
     init = function()
       local mypy = require("lint").get_namespace("mypy")
