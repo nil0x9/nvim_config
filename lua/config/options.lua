@@ -19,3 +19,5 @@ vim.opt.writebackup = false
 vim.opt.foldmethod='indent'
 vim.opt.colorcolumn='120'
 vim.g.ai_cmp = false
+-- 确保剪贴板与系统剪贴板同步（macOS 上会自动使用 pbcopy/pbpaste）
+vim.opt.clipboard = "unnamedplus"

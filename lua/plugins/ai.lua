@@ -1,6 +1,7 @@
 return {
   {
     "CopilotC-Nvim/CopilotChat.nvim",
+    enabled = false,
     branch = "canary",
     dependencies = {
       { "zbirenbaum/copilot.lua" }, -- or github/copilot.vim
@@ -16,6 +17,7 @@ return {
   },
   {
     "zbirenbaum/copilot.lua",
+    enabled = false,
     event = "InsertEnter",
     config = function()
       require("copilot").setup({

@@ -4,17 +4,20 @@ vim.opt.number = true
 -- vim.opt.mouse = ""
 
 ------------------------------------------------------------------------------
-vim.g.clipboard = {
-  name = 'OSC 52',
-  copy = {
-    ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
-    ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
-  },
-  paste = {
-    ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
-    ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
-  },
-}
+-- 在 macOS 上，Neovim 会自动使用 pbcopy/pbpaste 与系统剪贴板交互
+-- 只有在远程终端（SSH）会话中才需要 OSC 52
+-- 如果需要支持远程终端，可以取消下面的注释并根据环境条件使用
+-- vim.g.clipboard = {
+--   name = 'OSC 52',
+--   copy = {
+--     ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
+--     ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
+--   },
+--   paste = {
+--     ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
+--     ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
+--   },
+-- }
 ------------------------------------------------------------------------------
 -- 使用空格代替 Tab
 vim.opt.expandtab = true
