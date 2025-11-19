@@ -166,9 +166,15 @@ vim.api.nvim_del_keymap('v', '<A-k>')  -- 可视模式
 
 
 
+-- 使用 Ctrl+Shift+j/k 来移动代码行（Mac 兼容性更好）
+vim.api.nvim_set_keymap('v', '<C-S-k>', ":m '<-2<CR>gv=gv", opts)
+vim.api.nvim_set_keymap('n', '<C-S-k>', "<cmd>m .-2<CR>==", opts)
+vim.api.nvim_set_keymap('v', '<C-S-j>', ":m '>+1<CR>gv=gv", opts)
+vim.api.nvim_set_keymap('n', '<C-S-j>', "<cmd>m .+1<CR>==", opts)
+
+-- 保留原来的 Alt+j/k 映射（如果终端支持 Meta 键）
 vim.api.nvim_set_keymap('v', '<M-k>', ":m '<-2<CR>gv=gv", opts)
 vim.api.nvim_set_keymap('n', '<M-k>', "<cmd>m .-2<CR>==", opts)
- 
 vim.api.nvim_set_keymap('v', '<M-j>', ":m '>+1<CR>gv=gv", opts)
 vim.api.nvim_set_keymap('n', '<M-j>', "<cmd>m .+1<CR>==", opts)
 
