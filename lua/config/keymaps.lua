@@ -23,7 +23,7 @@ local function copy_file_name_to_clipboard()
   vim.fn.setreg('+', file_path)
   print("File filename copied to clipboard: " .. file_path)
 end
-vim.keymap.set("n", "<leader>cP", copy_file_name_to_clipboard)
+vim.keymap.set("n", "<leader>cpp", copy_file_name_to_clipboard)
 
 local function toggle_neotree()
  vim.cmd('Neotree show')

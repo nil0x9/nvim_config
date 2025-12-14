@@ -71,9 +71,9 @@ return {
       },
     },
   {
-  "sphamba/smear-cursor.nvim",
-  enabled = true,
-  opts = {
+    "sphamba/smear-cursor.nvim",
+    enabled = true,
+    opts = {
       -- Smear cursor when switching buffers or windows.
       smear_between_buffers = true,
 
@@ -99,6 +99,12 @@ return {
       never_draw_over_target = true,
       hide_target_hack = true,
       gamma = 1,
+      time_interval = 9, -- milliseconds
+      -- -- insert mode settings
+      -- stiffness_insert_mode = 0.3,
+      -- trailing_stiffness_insert_mode = 0.1,
+      -- damping_insert_mode = 0.5,
+      -- trailing_exponent_insert_mode = 1,
     },
   },
   {
@@ -119,5 +125,8 @@ return {
   --   build = function()
   --     vim.fn["mkdp#util#install"]()
   --   end,
+  -- },
+  -- { "lukas-reineke/virt-column.nvim",
+  --   opts = {},
   -- },
 }
