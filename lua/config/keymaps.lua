@@ -9,6 +9,8 @@ vim.api.nvim_set_keymap('n', '<C-a>', 'gg0vG$', { noremap = true, silent = true 
 vim.api.nvim_set_keymap('n', 'wdt', '<cmd>windo diffthis<cr>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', 'wdo', '<cmd>windo diffoff<cr>', { noremap = true, silent = true })
 
+vim.api.nvim_set_keymap("i", "jj", "<Esc>", { noremap = true, silent = true })
+
 
 local function copy_file_path_to_clipboard()
   local file_path = vim.fn.expand('%:p')
