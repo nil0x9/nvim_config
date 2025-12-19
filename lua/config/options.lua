@@ -19,4 +19,4 @@ vim.opt.writebackup = false
 vim.opt.foldmethod='indent'
 vim.opt.colorcolumn='120'
 vim.g.ai_cmp = false
-vim.opt.clipboard = "unnamed"
+-- vim.opt.clipboard = "unnamed"
