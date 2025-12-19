@@ -10,6 +10,7 @@ vim.api.nvim_set_keymap('n', 'wdt', '<cmd>windo diffthis<cr>', { noremap = true,
 vim.api.nvim_set_keymap('n', 'wdo', '<cmd>windo diffoff<cr>', { noremap = true, silent = true })
 
 vim.api.nvim_set_keymap("i", "jj", "<Esc>", { noremap = true, silent = true })
+vim.keymap.set("n", "<Leader>//", [[:%s/<C-r><C-w>//gn<CR>]], { desc = "Count word under cursor" })
 
 
 local function copy_file_path_to_clipboard()
