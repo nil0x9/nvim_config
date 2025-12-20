@@ -11,6 +11,9 @@ vim.api.nvim_set_keymap('n', 'wdo', '<cmd>windo diffoff<cr>', { noremap = true, 
 
 vim.api.nvim_set_keymap("i", "jj", "<Esc>", { noremap = true, silent = true })
 vim.keymap.set("n", "<Leader>//", [[:%s/<C-r><C-w>//gn<CR>]], { desc = "Count word under cursor" })
+-- 快速选中当前行
+vim.keymap.set('n', '<leader>vl', '^vg_', { desc = 'Select line content (no whitespace)' })
+
 
 
 local function copy_file_path_to_clipboard()
