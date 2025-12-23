@@ -14,7 +14,97 @@ vim.keymap.set("n", "<Leader>//", [[:%s/<C-r><C-w>//gn<CR>]], { desc = "Count wo
 -- 快速选中当前行
 vim.keymap.set('n', '<leader>vl', '^vg_', { desc = 'Select line content (no whitespace)' })
 
+-- Helper: 获取当前文件相对于项目根目录的路径
+-- Helper: 获取当前文件相对于项目根目录的路径
+local function get_relative_filepath()
+  local full_path = vim.api.nvim_buf_get_name(0)
+  if full_path == "" then
+    return ""
+  end
 
+  -- 获取项目根目录（LazyVim 会自动处理非 Git 项目情况）
+  local root
+  local ok, util = pcall(require, "lazyvim.util")
+  if ok then
+    root = util.root()  -- 这里总是返回有效路径（Git 根目录或 cwd）
+  else
+    root = vim.loop.cwd()
+  end
+
+  -- 计算相对于项目根目录的路径
+  local abs_file = vim.fn.fnamemodify(full_path, ":p")
+  local abs_root = vim.fn.fnamemodify(root, ":p")
+  
+  -- 确保 root 路径格式一致
+  abs_root = string.gsub(abs_root, "\\", "/")
+  abs_file = string.gsub(abs_file, "\\", "/")
+  
+  -- 如果 root 不以 / 结尾，添加 /
+  if not abs_root:match("/$") then
+    abs_root = abs_root .. "/"
+  end
+
+  -- 如果文件在项目根目录下
+  if abs_file:sub(1, #abs_root) == abs_root then
+    local rel_path = abs_file:sub(#abs_root + 1)
+    return vim.fs.normalize(rel_path)
+  end
+  
+  -- 如果不在项目根目录下，返回相对于 cwd 的路径
+  return vim.fn.fnamemodify(full_path, ":.")
+end
+
+-- Normal 模式：复制 "path/to/file:L123"
+vim.keymap.set('n', '<Leader>ln', function()
+  local line_num = vim.api.nvim_win_get_cursor(0)[1]
+  local rel_path = get_relative_filepath()
+  if rel_path == "" then
+    vim.notify("Failed to get relative path", vim.log.levels.WARN)
+    return
+  end
+  local text = rel_path .. ":L" .. line_num
+  vim.fn.setreg('+', text)
+  vim.notify('Yanked: ' .. text, { title = "Line Number" })
+end, { desc = 'Copy file:Lline to + register' })
+
+-- Visual 模式：复制 "path/to/file:L123-125"
+vim.keymap.set('v', '<Leader>ln', function()
+  local start_line = vim.fn.line('v')
+  local end_line = vim.fn.line('.')
+  if start_line > end_line then
+    start_line, end_line = end_line, start_line
+  end
+  local rel_path = get_relative_filepath()
+  if rel_path == "" then
+    vim.notify("Failed to get relative path", vim.log.levels.WARN)
+    return
+  end
+  local text = rel_path .. ":L" .. start_line .. (start_line == end_line and "" or "-" .. end_line)
+  vim.fn.setreg('+', text)
+  vim.notify('Yanked: ' .. text, { title = "Line Range" })
+end, { desc = 'Copy file:Lstart-end to + register' })
+
+-- -- 复制当前行号到系统剪贴板（Normal 模式）
+-- vim.keymap.set('n', '<Leader>ln', function()
+--   local line_num = vim.api.nvim_win_get_cursor(0)[1] -- 获取当前行号
+--   vim.fn.setreg('+', tostring(line_num)) -- 复制到系统剪贴板寄存器
+--   vim.notify('Yanked line number: ' .. line_num) -- 显示提示
+-- end, { desc = 'Copy line number to register +' })
+--
+-- -- 复制选中范围的行号范围到系统剪贴板（Visual 模式）
+-- vim.keymap.set('v', '<Leader>ln', function()
+--   local start_line = vim.fn.line('v') -- 获取选择起始行
+--   local end_line = vim.fn.line('.')   -- 获取选择结束行
+--   -- 确保 start_line 是较小的行号
+--   if start_line > end_line then
+--     start_line, end_line = end_line, start_line
+--   end
+--   -- 构建格式：起始行-结束行
+--   local range_str = tostring(start_line) .. '-' .. tostring(end_line)
+--   vim.fn.setreg('+', range_str) -- 复制到系统剪贴板寄存器
+--   vim.notify('Yanked line numbers: ' .. range_str) -- 显示提示
+-- end, { desc = 'Copy line numbers to register +' })
+--
 
 local function copy_file_path_to_clipboard()
   local file_path = vim.fn.expand('%:p')
@@ -37,7 +127,7 @@ end
 
 -- vim.keymap.set('n', '<leader>to', '<cmd>Neotree show<CR>')
 -- vim.keymap.set('n', '<leader>tq', '<cmd>Neotree close<CR>')
-vim.keymap.set("n", "<leader>cp", copy_file_path_to_clipboard)
+-- vim.keymap.set("n", "<leader>cp", copy_file_path_to_clipboard)
 
 -- vim.keymap.set("n", "<leader>wd", toggle_diff_mode)
 
