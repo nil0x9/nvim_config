@@ -55,7 +55,7 @@ local function get_relative_filepath()
 end
 
 -- Normal 模式：复制 "path/to/file:L123"
-vim.keymap.set('n', '<Leader>ln', function()
+vim.keymap.set('n', '<Leader>rl', function()
   local line_num = vim.api.nvim_win_get_cursor(0)[1]
   local rel_path = get_relative_filepath()
   if rel_path == "" then
@@ -68,7 +68,7 @@ vim.keymap.set('n', '<Leader>ln', function()
 end, { desc = 'Copy file:Lline to + register' })
 
 -- Visual 模式：复制 "path/to/file:L123-125"
-vim.keymap.set('v', '<Leader>ln', function()
+vim.keymap.set('v', '<Leader>rl', function()
   local start_line = vim.fn.line('v')
   local end_line = vim.fn.line('.')
   if start_line > end_line then
@@ -120,6 +120,17 @@ local function copy_file_name_to_clipboard()
   print("File filename copied to clipboard: " .. file_path)
 end
 vim.keymap.set("n", "<leader>cpp", copy_file_name_to_clipboard)
+
+-- 复制当前文件的相对路径到系统剪贴板
+vim.keymap.set('n', '<leader>rf', function()
+  local rel_path = get_relative_filepath()
+  if rel_path ~= "" then
+    vim.fn.setreg('+', rel_path)
+    vim.notify('Yanked relative path: ' .. rel_path, { title = "Relative Path" })
+  else
+    vim.notify("Failed to get relative path", vim.log.levels.WARN)
+  end
+end, { desc = 'Copy relative filepath to + register' })
 
 local function toggle_neotree()
  vim.cmd('Neotree show')
@@ -395,3 +406,14 @@ function SearchInVisualSelection()
   end)
 end
 
+pcall(vim.keymap.del, 'n', '<c-/>')
+pcall(vim.keymap.del, 't', '<c-/>')
+pcall(vim.keymap.del, 'n', '<c-_>')
+pcall(vim.keymap.del, 't', '<c-_>')
+pcall(vim.keymap.del, 'n', '<leader>ft')
+pcall(vim.keymap.del, 't', '<leader>ft')
+
+-- 重新绑定到 ToggleTerm，使用 remap = true 来覆盖已有的映射
+vim.keymap.set({'n', 'v', 'i', 't'}, '<c-/>', '<cmd>ToggleTerm<cr>', { noremap = true, silent = true, desc = "Toggle Terminal" })
+vim.keymap.set({'n', 'v', 'i', 't'}, '<c-_>', '<cmd>ToggleTerm<cr>', { noremap = true, silent = true, desc = "Toggle Terminal" })
+vim.keymap.set({'n', 'v', 't'}, '<leader>ft', '<cmd>ToggleTerm<cr>', { noremap = true, silent = true, desc = "Toggle Terminal" })
