@@ -5,7 +5,7 @@
 vim.api.nvim_set_keymap('v', 'Y', '"+y', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', 'Y', '"+y', { noremap = true, silent = true })
 -- 在普通模式下按 Ctrl+a 全选
-vim.api.nvim_set_keymap('n', '<C-a>', 'gg0vG$', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<C-a>', 'ggVG', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', 'wdt', '<cmd>windo diffthis<cr>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', 'wdo', '<cmd>windo diffoff<cr>', { noremap = true, silent = true })
 
