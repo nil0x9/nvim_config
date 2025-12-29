@@ -417,3 +417,18 @@ pcall(vim.keymap.del, 't', '<leader>ft')
 vim.keymap.set({'n', 'v', 'i', 't'}, '<c-/>', '<cmd>ToggleTerm<cr>', { noremap = true, silent = true, desc = "Toggle Terminal" })
 vim.keymap.set({'n', 'v', 'i', 't'}, '<c-_>', '<cmd>ToggleTerm<cr>', { noremap = true, silent = true, desc = "Toggle Terminal" })
 vim.keymap.set({'n', 'v', 't'}, '<leader>ft', '<cmd>ToggleTerm<cr>', { noremap = true, silent = true, desc = "Toggle Terminal" })
+
+
+
+-- 快捷选中当前单词，不含下划线
+vim.keymap.set('n', '<leader>vw', function()
+    local original_iskeyword = vim.opt.iskeyword:get()
+    vim.opt.iskeyword:remove('_')
+    vim.cmd('normal! viw')
+    vim.defer_fn(function()
+        vim.opt.iskeyword = original_iskeyword
+    end, 10)
+end, { 
+    desc = 'Select word (treat underscore as boundary)',
+    silent = true 
+})
