@@ -5,6 +5,13 @@ return {
       scroll = {
         enabled = false,
       },
+      picker = {
+            sources = {
+                explorer = {
+                    hidden = true,
+                }
+            }
+        }
     },
   },
 }
