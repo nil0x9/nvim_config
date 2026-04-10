@@ -85,26 +85,15 @@ return {
       scroll_buffer_space = true,
 
       -- Set to `true` if your font supports legacy computing symbols (block unicode symbols).
-      -- Smears will blend better on all backgrounds.
+      -- Smears and particles will look a lot less blocky.
       legacy_computing_symbols_support = false,
 
       -- Smear cursor in insert mode.
       -- See also `vertical_bar_cursor_insert_mode` and `distance_stop_animating_vertical_bar`.
       smear_insert_mode = true,
-      cursor_color = "#55bfe3",
-      stiffness = 0.3,
-      trailing_stiffness = 0.1,
-      damping = 0.5,
-      trailing_exponent = 3,
-      never_draw_over_target = true,
-      hide_target_hack = true,
-      gamma = 1,
-      time_interval = 9, -- milliseconds
-      -- -- insert mode settings
-      -- stiffness_insert_mode = 0.3,
-      -- trailing_stiffness_insert_mode = 0.1,
-      -- damping_insert_mode = 0.5,
-      -- trailing_exponent_insert_mode = 1,
+      stiffness = 1.0,
+      trailing_stiffness = 0.5,
+      distance_stop_animating = 0.5,
     },
   },
   {
