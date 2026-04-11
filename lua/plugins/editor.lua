@@ -86,8 +86,10 @@ return {
 
       -- Set to `true` if your font supports legacy computing symbols (block unicode symbols).
       -- Smears and particles will look a lot less blocky.
-      legacy_computing_symbols_support = false,
+      legacy_computing_symbols_support = true,
+      never_draw_over_target = true,
 
+      smear_to_cmd = false,
       -- Smear cursor in insert mode.
       -- See also `vertical_bar_cursor_insert_mode` and `distance_stop_animating_vertical_bar`.
       smear_insert_mode = true,
