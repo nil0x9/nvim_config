@@ -70,6 +70,7 @@ return {
         silent = true,
       },
     },
+  },
   {
     "sphamba/smear-cursor.nvim",
     enabled = true,
@@ -99,11 +100,30 @@ return {
     },
   },
   {
-      "OXY2DEV/markview.nvim",
-      lazy = false,
-      priority = 49,
+    "MeanderingProgrammer/render-markdown.nvim",
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
+    ft = { "markdown" },
+    opts = {
+      latex = { enabled = true },
+    },
   },
-},
+  {
+    "nvim-treesitter/nvim-treesitter",
+    opts = function(_, opts)
+      local parsers = { "markdown", "markdown_inline", "latex", "html" }
+
+      opts.ensure_installed = opts.ensure_installed or {}
+      if opts.ensure_installed == "all" then
+        return
+      end
+
+      for _, parser in ipairs(parsers) do
+        if not vim.tbl_contains(opts.ensure_installed, parser) then
+          table.insert(opts.ensure_installed, parser)
+        end
+      end
+    end,
+  },
   -- {
   --   "iamcco/markdown-preview.nvim",
   --   init = function()
