@@ -1,3 +1,118 @@
+local latex_cache = {}
+local latex_converters = { "utftex", "latex2text" }
+
+local function convert_latex(input)
+  if latex_cache[input] ~= nil then
+    return latex_cache[input]
+  end
+
+  for _, converter in ipairs(latex_converters) do
+    if vim.fn.executable(converter) == 1 then
+      local result = vim.system({ converter }, { stdin = input, text = true }):wait()
+      if result.code == 0 and result.stdout and result.stdout ~= "" then
+        latex_cache[input] = vim.split(result.stdout, "\n", { plain = true, trimempty = true })
+        return latex_cache[input]
+      end
+    end
+  end
+
+  latex_cache[input] = false
+  return nil
+end
+
+local function parse_latex_blocks(ctx)
+  local marks = {}
+  local query = vim.treesitter.query.parse("markdown_inline", "(latex_block) @latex")
+  local win = vim.fn.bufwinid(ctx.buf)
+  local cursor_row = win ~= -1 and vim.api.nvim_win_get_cursor(win)[1] - 1 or nil
+
+  for _, node in query:iter_captures(ctx.root, ctx.buf) do
+    local source = vim.treesitter.get_node_text(node, ctx.buf)
+    local input = vim.trim(source:match("^%$*(.-)%$*$") or source)
+    local output = convert_latex(input)
+
+    if output then
+      local start_row, start_col, end_row, end_col = node:range()
+      local source_height = end_row - start_row + 1
+
+      if source_height == 1 then
+        local center = math.floor(#output / 2) + 1
+        marks[#marks + 1] = {
+          conceal = "latex",
+          start_row = start_row,
+          start_col = start_col,
+          opts = {
+            end_row = end_row,
+            end_col = end_col,
+            conceal = "",
+            virt_text = { { output[center], "RenderMarkdownMath" } },
+            virt_text_pos = "inline",
+          },
+        }
+
+        if center > 1 then
+          local lines = {}
+          for i = 1, center - 1 do
+            lines[#lines + 1] = { { output[i], "RenderMarkdownMath" } }
+          end
+          marks[#marks + 1] = {
+            conceal = "virtual_lines",
+            start_row = start_row,
+            start_col = 0,
+            opts = {
+              virt_lines = lines,
+              virt_lines_above = true,
+            },
+          }
+        end
+
+        if center < #output then
+          local lines = {}
+          for i = center + 1, #output do
+            lines[#lines + 1] = { { output[i], "RenderMarkdownMath" } }
+          end
+          marks[#marks + 1] = {
+            conceal = "virtual_lines",
+            start_row = start_row,
+            start_col = 0,
+            opts = { virt_lines = lines },
+          }
+        end
+      else
+        if cursor_row and cursor_row >= start_row and cursor_row <= end_row then
+          goto continue
+        end
+
+        local output_offset = math.max(math.floor((source_height - #output) / 2), 0)
+
+        for row = start_row, end_row do
+          local line = vim.api.nvim_buf_get_lines(ctx.buf, row, row + 1, false)[1] or ""
+          local output_line = output[row - start_row - output_offset + 1]
+          local opts = {
+            end_row = row,
+            end_col = row == end_row and end_col or #line,
+            conceal = "",
+          }
+          if output_line then
+            opts.virt_text = { { output_line, "RenderMarkdownMath" } }
+            opts.virt_text_pos = "inline"
+          end
+          marks[#marks + 1] = {
+            conceal = "latex",
+            start_row = row,
+            start_col = row == start_row and start_col or 0,
+            opts = opts,
+          }
+        end
+      end
+    end
+
+    ::continue::
+  end
+
+  return marks
+end
+
 return {
   {
     "mg979/vim-visual-multi",
@@ -104,7 +219,14 @@ return {
     dependencies = { "nvim-treesitter/nvim-treesitter" },
     ft = { "markdown" },
     opts = {
-      latex = { enabled = true },
+      change_events = { "CursorMoved", "CursorMovedI" },
+      latex = { enabled = false },
+      custom_handlers = {
+        markdown_inline = {
+          extends = true,
+          parse = parse_latex_blocks,
+        },
+      },
     },
   },
   {
