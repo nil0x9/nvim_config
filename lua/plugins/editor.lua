@@ -1,16 +1,32 @@
 local latex_cache = {}
 local latex_converters = { "utftex", "latex2text" }
 
+local function normalize_latex(input)
+  local norm_delimiter = "left"
+  return input:gsub("\\|", function()
+    if norm_delimiter == "left" then
+      norm_delimiter = "right"
+      return "\\lVert "
+    else
+      norm_delimiter = "left"
+      return "\\rVert "
+    end
+  end)
+end
+
 local function convert_latex(input)
   if latex_cache[input] ~= nil then
     return latex_cache[input]
   end
 
+  local normalized = normalize_latex(input)
+
   for _, converter in ipairs(latex_converters) do
     if vim.fn.executable(converter) == 1 then
-      local result = vim.system({ converter }, { stdin = input, text = true }):wait()
+      local result = vim.system({ converter }, { stdin = normalized, text = true }):wait()
       if result.code == 0 and result.stdout and result.stdout ~= "" then
-        latex_cache[input] = vim.split(result.stdout, "\n", { plain = true, trimempty = true })
+        local output = result.stdout:gsub("%s+‖", "‖")
+        latex_cache[input] = vim.split(output, "\n", { plain = true, trimempty = true })
         return latex_cache[input]
       end
     end
