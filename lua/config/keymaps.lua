@@ -87,14 +87,26 @@ end, { desc = 'Copy file:Lstart-end to + register' })
 local function parse_file_line_reference(ref)
   ref = vim.trim(ref)
 
-  local path, line = ref:match("^(.+):L(%d+)%-%d+$")
-  if not path then
-    path, line = ref:match("^(.+):L(%d+)$")
+  local patterns = {
+    "^(.+)#L(%d+)%-L?%d+$",
+    "^(.+)#L(%d+)$",
+    "^(.+):L(%d+)%-L?%d+$",
+    "^(.+):L(%d+)$",
+    "^(.+):(%d+)%-%d+$",
+    "^(.+):(%d+)$",
+  }
+
+  local path, line
+  for _, pattern in ipairs(patterns) do
+    path, line = ref:match(pattern)
+    if path then
+      break
+    end
   end
 
   line = tonumber(line)
   if not path or not line or line < 1 then
-    error("Expected format: path/to/file:L123 or path/to/file:L123-456", 0)
+    error("Expected format: path/to/file:L123, path/to/file:123, or path/to/file#L123-L456", 0)
   end
 
   return path, line
@@ -167,10 +179,10 @@ vim.api.nvim_create_user_command("GoToFileLine", function(opts)
 end, {
   nargs = "*",
   complete = "file",
-  desc = "Open path:Lline or path:Lstart-end",
+  desc = "Open file line reference",
 })
 
-vim.keymap.set("n", "<leader>fl", "<cmd>GoToFileLine<cr>", { desc = "Open file:Lline prompt" })
+vim.keymap.set("n", "<leader>fl", "<cmd>GoToFileLine<cr>", { desc = "Open file line prompt" })
 
 -- -- 复制当前行号到系统剪贴板（Normal 模式）
 -- vim.keymap.set('n', '<Leader>ln', function()
