@@ -84,6 +84,94 @@ vim.keymap.set('v', '<Leader>rl', function()
   vim.notify('Yanked: ' .. text, { title = "Line Range" })
 end, { desc = 'Copy file:Lstart-end to + register' })
 
+local function parse_file_line_reference(ref)
+  ref = vim.trim(ref)
+
+  local path, line = ref:match("^(.+):L(%d+)%-%d+$")
+  if not path then
+    path, line = ref:match("^(.+):L(%d+)$")
+  end
+
+  line = tonumber(line)
+  if not path or not line or line < 1 then
+    error("Expected format: path/to/file:L123 or path/to/file:L123-456", 0)
+  end
+
+  return path, line
+end
+
+local function get_file_line_root()
+  local ok, util = pcall(require, "lazyvim.util")
+  if ok then
+    return util.root()
+  end
+
+  return vim.loop.cwd()
+end
+
+local function resolve_file_line_path(path)
+  if path:match("^/") or path:match("^~") then
+    return vim.fs.normalize(vim.fn.fnamemodify(path, ":p"))
+  end
+
+  return vim.fs.normalize(vim.fs.joinpath(get_file_line_root(), path))
+end
+
+local function open_file_line_reference(ref)
+  local path, line = parse_file_line_reference(ref)
+  local abs_path = resolve_file_line_path(path)
+  local stat = (vim.uv or vim.loop).fs_stat(abs_path)
+
+  if not stat then
+    error("File does not exist: " .. path, 0)
+  end
+
+  if stat.type ~= "file" then
+    error("Not a file: " .. path, 0)
+  end
+
+  local ok, lines = pcall(vim.fn.readfile, abs_path, "", line)
+  if not ok then
+    error("Failed to read file: " .. path, 0)
+  end
+
+  if #lines < line then
+    error(("Line %d does not exist in %s (%d lines)"):format(line, path, #lines), 0)
+  end
+
+  vim.cmd.edit(vim.fn.fnameescape(abs_path))
+  vim.api.nvim_win_set_cursor(0, { line, 0 })
+  vim.cmd("normal! zv")
+end
+
+local function prompt_file_line_reference()
+  vim.ui.input({
+    prompt = "File line: ",
+    completion = "file",
+  }, function(input)
+    if not input or vim.trim(input) == "" then
+      return
+    end
+
+    open_file_line_reference(input)
+  end)
+end
+
+vim.api.nvim_create_user_command("GoToFileLine", function(opts)
+  if opts.args == "" then
+    prompt_file_line_reference()
+    return
+  end
+
+  open_file_line_reference(opts.args)
+end, {
+  nargs = "*",
+  complete = "file",
+  desc = "Open path:Lline or path:Lstart-end",
+})
+
+vim.keymap.set("n", "<leader>fl", "<cmd>GoToFileLine<cr>", { desc = "Open file:Lline prompt" })
+
 -- -- 复制当前行号到系统剪贴板（Normal 模式）
 -- vim.keymap.set('n', '<Leader>ln', function()
 --   local line_num = vim.api.nvim_win_get_cursor(0)[1] -- 获取当前行号
