@@ -163,6 +163,10 @@ return {
     },
   },
   {
+    "cappyzawa/trim.nvim",
+    opts = {},
+  },
+  {
     "folke/flash.nvim",
     keys = {
       { "S", mode = { "x", "o", "n" }, false },
