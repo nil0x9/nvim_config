@@ -144,6 +144,25 @@ return {
   },
   { "tpope/vim-surround" },
   {
+    "chrisgrieser/nvim-spider",
+    keys = {
+      { "w", "<cmd>lua require('spider').motion('w')<CR>", mode = { "n", "o", "x" } },
+      { "e", "<cmd>lua require('spider').motion('e')<CR>", mode = { "n", "o", "x" } },
+      { "b", "<cmd>lua require('spider').motion('b')<CR>", mode = { "n", "o", "x" } },
+      { "ge", "<cmd>lua require('spider').motion('ge')<CR>", mode = { "n", "o", "x" } },
+    },
+  },
+  {
+    "dnlhc/glance.nvim",
+    cmd = "Glance",
+    keys = {
+      { "gD", "<cmd>Glance definitions<cr>", desc = "Glance Definitions" },
+      { "gR", "<cmd>Glance references<cr>", desc = "Glance References" },
+      { "gY", "<cmd>Glance type_definitions<cr>", desc = "Glance Type Definitions" },
+      { "gM", "<cmd>Glance implementations<cr>", desc = "Glance Implementations" },
+    },
+  },
+  {
     "folke/flash.nvim",
     keys = {
       { "S", mode = { "x", "o", "n" }, false },

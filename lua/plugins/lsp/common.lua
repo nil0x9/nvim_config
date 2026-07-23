@@ -7,6 +7,8 @@ return {
           keys = {
             -- disable signature help in insert mode
             { "<C-k>", false, mode = "i" },
+            -- use the global Glance mapping instead of LazyVim's buffer-local declaration mapping
+            { "gD", false },
           },
         },
       },

@@ -3,19 +3,6 @@ vim.opt.relativenumber = false
 vim.opt.number = true
 -- vim.opt.mouse = ""
 
-------------------------------------------------------------------------------
-vim.g.clipboard = {
-  name = 'OSC 52',
-  copy = {
-    ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
-    ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
-  },
-  paste = {
-    ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
-    ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
-  },
-}
-------------------------------------------------------------------------------
 -- 使用空格代替 Tab
 vim.opt.expandtab = true
 
@@ -81,4 +68,3 @@ vim.api.nvim_create_user_command('ApplyYellow', function()
   local range = { vim.fn.line("'<"), vim.fn.line("'>") }
   apply_color('yellow', range)
 end, { range = true })
-
