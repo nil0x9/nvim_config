@@ -131,6 +131,12 @@ end
 
 return {
   {
+    "LazyVim/LazyVim",
+    opts = {
+      colorscheme = "catppuccin-macchiato",  -- tokyonight-night, retrobox, catppuccin-macchiato
+    },
+  },
+  {
     "mg979/vim-visual-multi",
     init = function()
       -- 在插件加载后配置键映射
