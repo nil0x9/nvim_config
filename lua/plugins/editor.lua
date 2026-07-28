@@ -254,9 +254,9 @@ return {
       -- Smear cursor in insert mode.
       -- See also `vertical_bar_cursor_insert_mode` and `distance_stop_animating_vertical_bar`.
       smear_insert_mode = true,
-      stiffness = 1.0,
-      trailing_stiffness = 0.5,
-      distance_stop_animating = 0.5,
+      stiffness = 0.8,
+      trailing_stiffness = 0.3,
+      distance_stop_animating = 1.0,
     },
   },
   {
