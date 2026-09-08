@@ -219,6 +219,7 @@ return {
   {
     "saghen/blink.cmp",
     -- build = "cargo build --release",
+    dependencies = { "saghen/blink.lib" },
     opts = {
       keymap = {
         ["<C-k>"] = { "select_prev", "fallback" },
