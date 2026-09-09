@@ -20,11 +20,6 @@ return {
         title = " Terminal ",
         title_pos = "center",
       },
-      highlights = {
-        FloatBorder = { guifg = "#7aa2f7" },
-        NormalFloat = { guibg = "#1a1b26" },
-        FloatTitle = { guifg = "#c0caf5", guibg = "#1a1b26" },
-      },
       on_open = function(term)
         vim.cmd("setlocal nonumber norelativenumber signcolumn=no")
         vim.cmd("startinsert")
