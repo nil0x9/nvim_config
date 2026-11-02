@@ -29,6 +29,7 @@ require("lazy").setup({
     { import = "plugins.snacks" },
     { import = "plugins.terminal" },
     { import = "plugins.custom.translate" },
+    { import = "plugins.custom.jq-preview" },
   },
   defaults = {
     -- By default, only LazyVim plugins will be lazy-loaded. Your custom plugins will load during startup.
